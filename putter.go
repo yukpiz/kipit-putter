@@ -28,6 +28,9 @@ func Write(path string, name string, fh *multipart.FileHeader) error {
 		return err
 	}
 	f, err := fh.Open()
+	if err != nil {
+		return err
+	}
 	writer := bufio.NewWriter(out)
 	reader := bufio.NewReader(f)
 	bsize := 4 * 1024 * 1024
