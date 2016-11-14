@@ -9,14 +9,14 @@ import (
 	"time"
 )
 
-func Write(path string, name string, fh *multipart.FileHeader) error {
+func Write(path string, name string, fh *multipart.FileHeader) (string, error) {
 	//Create all directories about the received path.
 	//It it the same as `mkdir -p`
 	uts := time.Now().Unix()
 	path = filepath.Join(path, strconv.FormatInt(uts, 10))
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	//Auto generation filepath.
@@ -25,11 +25,11 @@ func Write(path string, name string, fh *multipart.FileHeader) error {
 	//Create empty file.
 	out, err := os.Create(fpath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	f, err := fh.Open()
 	if err != nil {
-		return err
+		return "", err
 	}
 	writer := bufio.NewWriter(out)
 	reader := bufio.NewReader(f)
@@ -47,7 +47,7 @@ func Write(path string, name string, fh *multipart.FileHeader) error {
 		}
 	}
 	writer.Flush()
-	return nil
+	return fpath, nil
 }
 
 func Test() string {
